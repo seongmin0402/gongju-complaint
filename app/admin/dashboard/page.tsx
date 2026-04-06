@@ -540,65 +540,65 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Table card + Priority sidebar */}
-        <div className="flex gap-4 items-start">
+        <div className="flex flex-col lg:flex-row gap-4 items-start">
         {/* Table card */}
-        <div className="flex-1 min-w-0 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="flex-1 min-w-0 w-full bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           {/* Toolbar */}
-          <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 space-y-2">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex gap-1 flex-wrap">
-                {(['all', '접수', '처리중', '완료'] as const).map((tab) => (
-                  <button key={tab} onClick={() => { setActiveTab(tab); setSelectedIds(new Set()); }}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}>
-                    {tab === 'all' ? '전체' : tab}
-                    <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-blue-500 text-blue-100' : 'bg-gray-200 text-gray-600'}`}>
-                      {tab === 'all' ? stats.total : stats[tab as ComplaintStatus]}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                {/* Date filter */}
-                <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value as DateFilter)}
-                  className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="all">전체 기간</option>
-                  <option value="today">오늘</option>
-                  <option value="week">최근 7일</option>
-                  <option value="month">최근 30일</option>
-                </select>
-                {/* 우선순위 필터 */}
-                <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as ComplaintPriority | 'all')}
-                  className="text-sm border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="all">전체 우선순위</option>
-                  <option value="높음">🔴 높음</option>
-                  <option value="보통">🟡 보통</option>
-                  <option value="낮음">⚪ 낮음</option>
-                </select>
-                {/* 정렬 */}
-                <div className="flex rounded-lg border border-gray-200 overflow-hidden">
-                  <button onClick={() => setSortBy('latest')}
-                    className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${sortBy === 'latest' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-                    최신순
-                  </button>
-                  <button onClick={() => setSortBy('priority')}
-                    className={`px-2.5 py-1.5 text-xs font-medium transition-colors border-l border-gray-200 ${sortBy === 'priority' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-                    우선순위순
-                  </button>
-                </div>
-                {selectedIds.size > 0 && (
-                  <button onClick={handleDeleteSelected} disabled={isDeleting}
-                    className="flex items-center gap-1.5 text-sm text-white bg-red-500 hover:bg-red-600 disabled:opacity-60 transition-colors px-3 py-1.5 rounded-lg shadow-sm">
-                    {isDeleting ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Trash2 className="w-4 h-4" />}
-                    선택 삭제 ({selectedIds.size}건)
-                  </button>
-                )}
-                <button onClick={exportCSV} className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 bg-white hover:bg-gray-50 transition-colors px-3 py-1.5 rounded-lg">
-                  <Download className="w-4 h-4" />CSV
+          <div className="px-3 sm:px-5 py-3 border-b border-gray-100 bg-gray-50 space-y-2">
+            {/* 상태 탭 */}
+            <div className="flex gap-1 flex-wrap">
+              {(['all', '접수', '처리중', '완료'] as const).map((tab) => (
+                <button key={tab} onClick={() => { setActiveTab(tab); setSelectedIds(new Set()); }}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}>
+                  {tab === 'all' ? '전체' : tab}
+                  <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-blue-500 text-blue-100' : 'bg-gray-200 text-gray-600'}`}>
+                    {tab === 'all' ? stats.total : stats[tab as ComplaintStatus]}
+                  </span>
                 </button>
-                <button onClick={fetchComplaints} disabled={isLoading} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100">
-                  <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />새로고침
+              ))}
+            </div>
+            {/* 필터/정렬/액션 툴바 */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* Date filter */}
+              <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value as DateFilter)}
+                className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">전체 기간</option>
+                <option value="today">오늘</option>
+                <option value="week">최근 7일</option>
+                <option value="month">최근 30일</option>
+              </select>
+              {/* 우선순위 필터 */}
+              <select value={priorityFilter} onChange={(e) => setPriorityFilter(e.target.value as ComplaintPriority | 'all')}
+                className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 text-gray-600 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="all">전체 우선순위</option>
+                <option value="높음">🔴 높음</option>
+                <option value="보통">🟡 보통</option>
+                <option value="낮음">⚪ 낮음</option>
+              </select>
+              {/* 정렬 */}
+              <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+                <button onClick={() => setSortBy('latest')}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${sortBy === 'latest' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+                  최신순
+                </button>
+                <button onClick={() => setSortBy('priority')}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors border-l border-gray-200 ${sortBy === 'priority' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
+                  우선순위순
                 </button>
               </div>
+              {selectedIds.size > 0 && (
+                <button onClick={handleDeleteSelected} disabled={isDeleting}
+                  className="flex items-center gap-1.5 text-xs text-white bg-red-500 hover:bg-red-600 disabled:opacity-60 transition-colors px-3 py-1.5 rounded-lg shadow-sm">
+                  {isDeleting ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                  삭제 ({selectedIds.size})
+                </button>
+              )}
+              <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-800 border border-gray-200 bg-white hover:bg-gray-50 transition-colors px-3 py-1.5 rounded-lg">
+                <Download className="w-3.5 h-3.5" />CSV
+              </button>
+              <button onClick={fetchComplaints} disabled={isLoading} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100">
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />새로고침
+              </button>
             </div>
             {/* Search */}
             <div className="relative">
@@ -940,7 +940,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* 우선순위 랭킹 사이드 패널 */}
-        <div className="w-64 flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden sticky top-20 self-start">
+        <div className="w-full lg:w-64 lg:flex-shrink-0 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden lg:sticky lg:top-20 lg:self-start">
           <div className="px-4 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
             <span className="text-sm font-bold text-gray-800">🏆 처리 우선순위</span>
             <span className="ml-auto text-xs text-gray-400 font-medium">접수 {priorityRanking.length}건</span>

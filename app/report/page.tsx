@@ -180,28 +180,28 @@ function ReportPageContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col overflow-hidden">
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3 sticky top-0 z-20 shadow-sm flex-shrink-0">
-        <Link href="/" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors">
+      <header className="bg-white border-b border-gray-200 px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2 sm:gap-3 sticky top-0 z-20 shadow-sm flex-shrink-0">
+        <Link href="/" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-800 transition-colors flex-shrink-0">
           <ArrowLeft className="w-5 h-5" />
-          <span className="text-sm">지도로 돌아가기</span>
+          <span className="text-xs sm:text-sm">지도로 돌아가기</span>
         </Link>
         <div className="flex-1" />
-        <Link href="/info" className="text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-3 py-1.5 rounded-lg transition-colors">
+        <Link href="/info" className="text-[11px] sm:text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 border border-green-200 px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap">
           환경정보
         </Link>
-        <div className="flex items-center gap-2">
-          <img src="/로고_세로.png" alt="공주시 로고" className="h-8 w-auto object-contain flex-shrink-0" />
-          <span className="font-bold text-gray-900 text-base">민원 신고</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <img src="/로고_세로.png" alt="공주시 로고" className="h-7 sm:h-8 w-auto object-contain flex-shrink-0" />
+          <span className="font-bold text-gray-900 text-sm sm:text-base whitespace-nowrap">민원 신고</span>
         </div>
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        <div className="h-56 sm:h-72 lg:h-auto lg:flex-1 relative">
+        <div className="h-[38vh] min-h-[250px] sm:h-[44vh] lg:h-auto lg:flex-1 relative">
           <ReportMap position={position} onPositionChange={handlePositionChange} />
         </div>
 
         <div className="flex-1 lg:flex-none lg:w-[420px] bg-white border-t lg:border-t-0 lg:border-l border-gray-200 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5">
             <div>
               <h1 className="text-xl font-bold text-gray-900">환경 민원 신고</h1>
               <p className="text-gray-500 text-sm mt-1">쓰레기 무단투기, 악취 등의 민원을 신고해 주세요.</p>
@@ -310,7 +310,7 @@ function ReportPageContent() {
             </div>
 
             {/* Reporter */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">이름 <span className="text-red-500">*</span></label>
                 <input type="text" value={form.reporter_name}

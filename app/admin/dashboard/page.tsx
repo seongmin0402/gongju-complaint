@@ -449,7 +449,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+      <header className="bg-white border-b border-gray-200 px-3 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between gap-2 sticky top-0 z-20 shadow-sm">
         <div className="flex items-center gap-2.5">
           <img src="/로고_세로.png" alt="공주시 로고" className="h-9 w-auto object-contain flex-shrink-0" />
           <div>
@@ -457,7 +457,7 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-gray-400">국립공주대학교 지리학과</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1 sm:gap-3 flex-wrap justify-end">
           <Link href="/" target="_blank" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors">
             <ExternalLink className="w-4 h-4" /><span className="hidden sm:inline">지도 보기</span>
           </Link>
@@ -483,8 +483,8 @@ export default function AdminDashboardPage() {
           )}
           <div className="h-4 w-px bg-gray-200" />
           <span className="text-xs text-gray-500 hidden sm:block">{userEmail}</span>
-          <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50">
-            <LogOut className="w-4 h-4" />로그아웃
+          <button onClick={handleLogout} className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 hover:text-red-600 transition-colors px-2 sm:px-3 py-1.5 rounded-lg hover:bg-red-50">
+            <LogOut className="w-4 h-4" /><span className="hidden sm:inline">로그아웃</span><span className="sm:hidden">나가기</span>
           </button>
         </div>
       </header>
@@ -549,7 +549,7 @@ export default function AdminDashboardPage() {
             <div className="flex gap-1 flex-wrap">
               {(['all', '접수', '처리중', '완료'] as const).map((tab) => (
                 <button key={tab} onClick={() => { setActiveTab(tab); setSelectedIds(new Set()); }}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}>
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${activeTab === tab ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-gray-100'}`}>
                   {tab === 'all' ? '전체' : tab}
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${activeTab === tab ? 'bg-blue-500 text-blue-100' : 'bg-gray-200 text-gray-600'}`}>
                     {tab === 'all' ? stats.total : stats[tab as ComplaintStatus]}
@@ -593,10 +593,10 @@ export default function AdminDashboardPage() {
                   삭제 ({selectedIds.size})
                 </button>
               )}
-              <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-800 border border-gray-200 bg-white hover:bg-gray-50 transition-colors px-3 py-1.5 rounded-lg">
+              <button onClick={exportCSV} className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-800 border border-gray-200 bg-white hover:bg-gray-50 transition-colors px-2.5 sm:px-3 py-1.5 rounded-lg">
                 <Download className="w-3.5 h-3.5" />CSV
               </button>
-              <button onClick={fetchComplaints} disabled={isLoading} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100">
+              <button onClick={fetchComplaints} disabled={isLoading} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-gray-100">
                 <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />새로고침
               </button>
             </div>
@@ -633,7 +633,66 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <>
+                <div className="md:hidden divide-y divide-gray-100">
+                  {filtered.map((c) => {
+                    const days = getDaysElapsed(c.created_at);
+                    const isOverdue = days >= 7 && c.status !== '완료';
+                    return (
+                      <div key={c.id} className={`p-3 space-y-2 ${selectedIds.has(c.id) ? 'bg-blue-50' : isOverdue ? 'bg-red-50' : 'bg-white'}`}>
+                        <div className="flex items-start gap-2">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.has(c.id)}
+                            onChange={() => toggleSelect(c.id)}
+                            className="mt-1 w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer"
+                          />
+                          <button
+                            onClick={() => setExpandedId(expandedId === c.id ? null : c.id)}
+                            className="flex-1 text-left"
+                          >
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full" style={{ background: CATEGORY_COLORS[c.category] }} />
+                              <span className="text-xs font-semibold text-gray-800">{c.category}</span>
+                              <span className={`ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_BG_CLASSES[c.status]}`}>{c.status}</span>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{c.description}</p>
+                            <div className="mt-1 flex items-center gap-2 text-[10px] text-gray-400">
+                              <span>{new Date(c.created_at).toLocaleDateString('ko-KR')}</span>
+                              <span className="font-mono">{c.complaint_number || '-'}</span>
+                              {isOverdue && <span className="text-red-600 font-semibold">{days}일 경과</span>}
+                            </div>
+                          </button>
+                        </div>
+                        {expandedId === c.id && (
+                          <div className="ml-6 mt-1 rounded-lg border border-gray-200 bg-gray-50 p-2.5 space-y-2">
+                            <p className="text-[11px] text-gray-600 break-all">{c.address || `${c.latitude.toFixed(6)}, ${c.longitude.toFixed(6)}`}</p>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              {STATUS_OPTIONS.map((s) => (
+                                <button
+                                  key={s}
+                                  onClick={() => handleStatusChange(c.id, s)}
+                                  disabled={c.status === s || updatingId === c.id}
+                                  className={`px-2 py-1 rounded-md text-[10px] font-semibold transition-colors ${c.status === s ? STATUS_BG_CLASSES[s] + ' cursor-default' : 'bg-white border border-gray-200 text-gray-600'}`}
+                                >
+                                  {s}
+                                </button>
+                              ))}
+                              <Link
+                                href={`/map?highlight=${c.id}`}
+                                target="_blank"
+                                className="ml-auto text-[10px] text-blue-600 font-semibold"
+                              >
+                                지도에서 보기
+                              </Link>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-gray-50 border-b border-gray-100">
@@ -934,6 +993,7 @@ export default function AdminDashboardPage() {
                     </tbody>
                   </table>
                 </div>
+                </>
               )}
             </>
           )}
